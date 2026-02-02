@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controlled Anonymity - Private Chat</title>
+    <meta name="description" content="Anonymous chat with AI verification. No email, no phone number - just conversations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Landing Screen -->
+        <section id="landing-screen" class="screen active">
+            <div class="landing-container">
+                <div class="logo-container">
+                    <div class="logo-glow"></div>
+                    <h1 class="logo">🎭</h1>
+                </div>
+                <h2 class="title">Controlled Anonymity</h2>
+                <p class="subtitle">Chat freely. Stay safe. Remain anonymous.</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <span class="feature-icon">🔒</span>
+                        <span>No email or phone required</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🤖</span>
+                        <span>AI-verified identity</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">💬</span>
+                        <span>Ephemeral conversations</span>
+                    </div>
+                </div>
+                
+                <button id="start-btn" class="btn-primary">
+                    <span>Get Started</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                
+                <p class="privacy-note">
+                    Your privacy matters. We never store your photos or personal data.
+                </p>
+            </div>
+        </section>
+
+        <!-- Verification Screen -->
+        <section id="verification-screen" class="screen">
+            <div class="verification-container">
+                <button id="back-to-landing" class="btn-back">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                
+                <h2>Verify Your Identity</h2>
+                <p class="verification-subtitle">
+                    Quick selfie verification to keep our community safe.
+                    <strong>Your photo is deleted immediately after verification.</strong>
+                </p>
+                
+                <div class="camera-container">
+                    <video id="camera-preview" autoplay playsinline></video>
+                    <canvas id="camera-canvas" style="display: none;"></canvas>
+                    <div id="camera-overlay" class="camera-overlay">
+                        <div class="face-guide"></div>
+                    </div>
+                    <div id="camera-error" class="camera-error" style="display: none;">
+                        <span>📷</span>
+                        <p>Camera access required</p>
+                        <button id="retry-camera" class="btn-secondary">Enable Camera</button>
+                    </div>
+                </div>
+                
+                <div class="verification-actions">
+                    <button id="capture-btn" class="btn-capture" disabled>
+                        <div class="capture-inner"></div>
+                    </button>
+                    <p class="capture-hint">Tap to capture</p>
+                </div>
+                
+                <div id="verification-status" class="verification-status" style="display: none;">
+                    <div class="status-spinner"></div>
+                    <p>Analyzing...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Setup Screen -->
+        <section id="profile-screen" class="screen">
+            <div class="profile-container">
+                <div class="verification-badge">
+                    <span class="badge-icon">✓</span>
+                    <span id="verified-gender">Verified</span>
+                </div>
+                
+                <h2>Create Your Profile</h2>
+                <p class="profile-subtitle">Choose how you want to appear in chats</p>
+                
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label for="nickname">Nickname</label>
+                        <input type="text" id="nickname" placeholder="Enter a fun nickname" maxlength="50" required>
+                        <span class="char-count"><span id="nickname-count">0</span>/50</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Short Bio (optional)</label>
+                        <textarea id="bio" placeholder="Tell others a bit about yourself..." maxlength="200"></textarea>
+                        <span class="char-count"><span id="bio-count">0</span>/200</span>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-full">
+                        Continue to Chat
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Dashboard Screen -->
+        <section id="dashboard-screen" class="screen">
+            <div class="dashboard-container">
+                <header class="dashboard-header">
+                    <div class="user-info">
+                        <span class="user-avatar">🎭</span>
+                        <div>
+                            <span id="user-nickname" class="user-name">Anonymous</span>
+                            <div class="karma-badge">
+                                <span class="karma-icon">⭐</span>
+                                <span id="user-karma">100</span> Karma
+                            </div>
+                        </div>
+                    </div>
+                    <button id="settings-btn" class="btn-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </button>
+                </header>
+                
+                <div class="match-section">
+                    <h3>Find a Chat Partner</h3>
+                    <p class="match-subtitle">Select who you'd like to talk to</p>
+                    
+                    <div class="filter-options">
+                        <button class="filter-btn active" data-filter="any">
+                            <span class="filter-icon">🌈</span>
+                            <span>Anyone</span>
+                        </button>
+                        <button class="filter-btn" data-filter="female">
+                            <span class="filter-icon">👩</span>
+                            <span>Women</span>
+                        </button>
+                        <button class="filter-btn" data-filter="male">
+                            <span class="filter-icon">👨</span>
+                            <span>Men</span>
+                        </button>
+                    </div>
+                    
+                    <div class="daily-limit">
+                        <span class="limit-icon">🎫</span>
+                        <span>Specific filters: <strong id="daily-remaining">5</strong>/5 remaining today</span>
+                    </div>
+                    
+                    <button id="find-match-btn" class="btn-primary btn-large">
+                        <span class="btn-text">Find Match</span>
+                        <div class="btn-loader" style="display: none;"></div>
+                    </button>
+                </div>
+                
+                <div class="tips-section">
+                    <h4>💡 Tips for great conversations</h4>
+                    <ul>
+                        <li>Be respectful and kind</li>
+                        <li>Keep conversations appropriate</li>
+                        <li>Report any inappropriate behavior</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Queue Screen -->
+        <section id="queue-screen" class="screen">
+            <div class="queue-container">
+                <div class="queue-animation">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring delay-1"></div>
+                    <div class="pulse-ring delay-2"></div>
+                    <span class="queue-icon">🔍</span>
+                </div>
+                
+                <h2>Finding your match...</h2>
+                <p class="queue-subtitle">Looking for <span id="queue-filter">anyone</span></p>
+                
+                <div class="queue-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="queue-time">0:00</span>
+                        <span class="stat-label">Time in queue</span>
+                    </div>
+                </div>
+                
+                <button id="cancel-queue-btn" class="btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </section>
+
+        <!-- Chat Screen -->
+        <section id="chat-screen" class="screen">
+            <div class="chat-container">
+                <header class="chat-header">
+                    <div class="partner-info">
+                        <span class="partner-avatar">🎭</span>
+                        <div>
+                            <span id="partner-nickname" class="partner-name">Anonymous</span>
+                            <span class="partner-status">Connected</span>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <button id="report-btn" class="btn-icon btn-danger" title="Report user">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                                <line x1="4" y1="22" x2="4" y2="15"/>
+                            </svg>
+                        </button>
+                        <button id="next-btn" class="btn-icon" title="Find next match">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 4v6h-6"/>
+                                <path d="M1 20v-6h6"/>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                            </svg>
+                        </button>
+                        <button id="leave-btn" class="btn-icon" title="Leave chat">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                </header>
+                
+                <div id="chat-messages" class="chat-messages">
+                    <div class="chat-start-message">
+                        <p>You're now chatting with <strong id="chat-partner-name">Anonymous</strong></p>
+                        <span class="chat-start-time" id="chat-start-time"></span>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <input type="text" id="message-input" placeholder="Type a message..." maxlength="1000">
+                    <button id="send-btn" class="btn-send">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Modal -->
+        <div id="report-modal" class="modal">
+            <div class="modal-content">
+                <h3>Report User</h3>
+                <p>Help us keep the community safe. Why are you reporting this user?</p>
+                
+                <div class="report-reasons">
+                    <label class="report-option">
+                        <input type="radio" name="report-reason" value="harassment">
+                        <span>Harassment or bullying</span>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" name="report-reason" value="inappropriate">
+                        <span>Inappropriate content</span>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" name="report-reason" value="spam">
+                        <span>Spam or scam</span>
+                    </label>
+                    <label class="report-option">
+                        <input type="radio" name="report-reason" value="other">
+                        <span>Other</span>
+                    </label>
+                </div>
+                
+                <textarea id="report-details" placeholder="Additional details (optional)..." maxlength="500"></textarea>
+                
+                <div class="modal-actions">
+                    <button id="cancel-report-btn" class="btn-secondary">Cancel</button>
+                    <button id="submit-report-btn" class="btn-primary btn-danger">Submit Report</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+    
+    <script src="device-fingerprint.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
